@@ -28,6 +28,13 @@ namespace ValSquadTest
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ValTestContext>(option => { option.UseSqlServer(Configuration.GetConnectionString("Default")); });
+          //  services.AddDbContext<ValTestContext>(
+          //        b => b.UseLazyLoadingProxies()
+          //.UseSqlServer(Configuration.GetConnectionString("Default")));
+            services.AddControllersWithViews()
+    .AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
             services.AddControllers();
         }
 

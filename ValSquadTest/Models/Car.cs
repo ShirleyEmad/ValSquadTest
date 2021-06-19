@@ -12,6 +12,7 @@ namespace ValSquadTest.Models
         public int Model { get; set; }
         public int? EmployeeId { get; set; }
         public int? CardId { get; set; }
+        public DateTime? PassingTime { get; set; }
 
         public virtual ParkingAccessCard Card { get; set; }
         public virtual Employee Employee { get; set; }

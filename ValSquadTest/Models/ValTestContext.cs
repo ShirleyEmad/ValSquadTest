@@ -26,7 +26,7 @@ namespace ValSquadTest.Models
             if (!optionsBuilder.IsConfigured)
             {
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                //optionsBuilder.UseSqlServer("Server=.;Database=ValTest;Trusted_Connection=True;");
+//                optionsBuilder.UseSqlServer("Server=.;Database=ValTest;Trusted_Connection=True;");
             }
         }
 
@@ -52,6 +52,11 @@ namespace ValSquadTest.Models
                 entity.Property(e => e.EmployeeId).HasColumnName("employeeID");
 
                 entity.Property(e => e.Model).HasColumnName("model");
+
+                entity.Property(e => e.PassingTime)
+                    .HasColumnType("date")
+                    .HasColumnName("passingTime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.HasOne(d => d.Card)
                     .WithMany(p => p.Cars)
