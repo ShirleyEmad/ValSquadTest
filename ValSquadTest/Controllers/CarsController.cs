@@ -20,6 +20,9 @@ namespace ValSquadTest.Controllers
             _context = context;
         }
 
+        //CRUD operations for car
+        #region CRUD
+
         // GET: api/Cars
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Car>>> GetCars()
@@ -31,7 +34,8 @@ namespace ValSquadTest.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Car>> GetCar(int id)
         {
-            var car = await _context.Cars.FindAsync(id);
+            //var car = await _context.Cars.FindAsync(id);
+            var car = _context.Cars.Include("Card").Where(c => c.PlateNumber == id).FirstOrDefault();
 
             if (car == null)
             {
@@ -99,13 +103,20 @@ namespace ValSquadTest.Controllers
             return NoContent();
         }
 
+        #endregion
+
+        //Check car existence
         private bool CarExists(int id)
         {
             return _context.Cars.Any(e => e.PlateNumber == id);
         }
 
+        //---------------------------------------------------------------------------------------------
+       
+        #region Simulate register a car
 
         //Register a car in the highway and creates it's access card
+        [Route("[action]/{id}")]
         [HttpPost]
         public async Task<ActionResult<Car>> PostCarFirstTime(Car car)
         {
@@ -125,7 +136,21 @@ namespace ValSquadTest.Controllers
             {
                 return BadRequest("Already Exists");
             }
-        }
+            //else
+            //{
+            //    //If a car passes in the same minute it'll be charged one time else it'll be charged 4 dollars
+            //    var carTime = _context.Cars.Where(c => c.PassingTime.Value.AddSeconds(60) >= car.PassingTime && c.PlateNumber==car.PlateNumber).FirstOrDefault();
+            //    if (carTime==null)
+            //    {
+            //        car.Card.Credit -= 4;
+            //        return car;
+            //    }
+            //    return BadRequest("Already Exists");
+            //}
+        } 
+        #endregion
+
+        #region Simulate passing the highway 
 
         //Card charged 4 dollars when the car passes the highway
         [Route("[action]/{id}")]
@@ -139,11 +164,18 @@ namespace ValSquadTest.Controllers
             }
             else
             {
-                oldCar.Card.Credit -= 4;
-                await _context.SaveChangesAsync();
-                return Ok();
+                var myCar = _context.Cars.Where(c => c.PassingTime.Value.AddSeconds(60) >= car.PassingTime && c.PlateNumber == car.PlateNumber).Include("Card").FirstOrDefault();
+                if (myCar == null)
+                {
+                    myCar.Card.Credit -= 4;
+                    await _context.SaveChangesAsync();
+                    //return Ok(car);
+                }
+                //oldCar.Card.Credit -= 4;
+                return Ok(myCar);
             }
-        }
+        } 
+        #endregion
 
     }
 }
