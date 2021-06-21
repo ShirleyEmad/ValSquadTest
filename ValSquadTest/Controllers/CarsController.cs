@@ -136,17 +136,6 @@ namespace ValSquadTest.Controllers
             {
                 return BadRequest("Already Exists");
             }
-            //else
-            //{
-            //    //If a car passes in the same minute it'll be charged one time else it'll be charged 4 dollars
-            //    var carTime = _context.Cars.Where(c => c.PassingTime.Value.AddSeconds(60) >= car.PassingTime && c.PlateNumber==car.PlateNumber).FirstOrDefault();
-            //    if (carTime==null)
-            //    {
-            //        car.Card.Credit -= 4;
-            //        return car;
-            //    }
-            //    return BadRequest("Already Exists");
-            //}
         } 
         #endregion
 
